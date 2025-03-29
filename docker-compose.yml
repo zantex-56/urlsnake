@@ -21,7 +21,7 @@ services:
     container_name: urlsnake-webapp
     restart: always
     ports:
-      - "5000:5000"
+      - "1967:5000"
     depends_on:
       - mongodb
     networks:
@@ -29,7 +29,7 @@ services:
     environment:
       - MONGO_URI=mongodb://mongodb:27017
       - MONGO_DB=urlsnake
-      - PORT=5000
+      - PORT=1967
       - HOST=0.0.0.0
 
 networks:
