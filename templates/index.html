@@ -1,67 +1,541 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>UrlSnake</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Snake - Slithering URLs into Shorter Forms</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
+        
+        :root {
+            --primary: #4CAF50;
+            --secondary: #388E3C;
+            --accent: #81C784;
+            --dark: #1B5E20;
+            --light: #E8F5E9;
+            --danger: #f44336;
+            --warning: #FF9800;
+            --snake-body: #388E3C;
+            --snake-head: #1B5E20;
         }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 8px;
+        
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
-        button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: white;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+                url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path fill="%23388E3C" fill-opacity="0.1" d="M0 0h100v100H0z"/><path d="M0 20h100M0 40h100M0 60h100M0 80h100M20 0v100M40 0v100M60 0v100M80 0v100" stroke="%23388E3C" stroke-width="0.5" stroke-opacity="0.1"/></svg>');
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        header {
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slither 5s infinite alternate ease-in-out;
+        }
+        
+        @keyframes slither {
+            0% { transform: translateX(-10px); }
+            100% { transform: translateX(10px); }
+        }
+        
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            position: relative;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-top: 5px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        
+        .card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 
+                      0 0 20px rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--dark));
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 
+                      0 0 30px rgba(76, 175, 80, 0.3);
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, var(--primary), transparent);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--light);
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border-radius: 8px;
+            border: 2px solid rgba(76, 175, 80, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .input-icon {
+            position: absolute;
+            top: 39px;
+            left: 15px;
+            color: var(--accent);
+        }
+        
+        small {
+            display: block;
+            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
         }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
         .error {
-            color: red;
+            color: var(--danger);
+            background: rgba(244, 67, 54, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid var(--danger);
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
+        
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        
         .success {
-            color: green;
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            animation: slideIn 0.5s forwards;
+        }
+        
+        @keyframes slideIn {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        .success p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .success a {
+            color: white;
+            font-size: 1.2rem;
+            word-break: break-all;
+            text-decoration: none;
+            border-bottom: 1px dashed var(--accent);
+            padding-bottom: 3px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .success a:hover {
+            color: var(--accent);
+        }
+        
+        /* Snake animation */
+        .snake-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .snake {
+            position: absolute;
+            width: 50px;
+            height: 20px;
+            z-index: -1;
+        }
+        
+        .snake-head {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--snake-head);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(27, 94, 32, 0.7);
+            z-index: 10;
+        }
+        
+        .snake-eye {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: white;
+            border-radius: 50%;
+            top: 5px;
+            z-index: 11;
+        }
+        
+        .snake-eye.left {
+            left: 5px;
+        }
+        
+        .snake-eye.right {
+            left: 15px;
+        }
+        
+        .snake-body {
+            position: absolute;
+            left: 20px;
+            width: 30px;
+            height: 15px;
+            background-color: var(--snake-body);
+            border-radius: 0 7.5px 7.5px 0;
+        }
+        
+        /* Copy button for short URL */
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 15px;
+            margin-left: 10px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background-color: var(--dark);
+        }
+        
+        .copy-btn i {
+            margin-right: 5px;
+        }
+        
+        .copy-tooltip {
+            position: absolute;
+            background-color: var(--dark);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .copy-tooltip.show {
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .logo-text {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>UrlSnake</h1>
-    <form action="/index" method="post">
-        <div class="form-group">
-            <label for="url">Long URL:</label>
-            <input type="text" id="url" name="url" placeholder="https://example.com/really/long/url" required>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="snake">
+                    <div class="snake-head">
+                        <div class="snake-eye left"></div>
+                        <div class="snake-eye right"></div>
+                    </div>
+                    <div class="snake-body"></div>
+                </div>
+                <div>
+                    <h1 class="logo-text">URL<span style="color: #81C784">Snake</span></h1>
+                    <p class="tagline">Slithering URLs into shorter forms</p>
+                </div>
+            </div>
+        </header>
+        
+        <div class="card">
+            <h2><i class="fas fa-link"></i> Create Short URL</h2>
+            <form action="/index" method="post">
+                <div class="form-group">
+                    <label for="url">Long URL</label>
+                    <i class="fas fa-globe input-icon"></i>
+                    <input type="text" id="url" name="url" placeholder="https://example.com/really/long/url" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="custom_id">Custom Short ID (optional)</label>
+                    <i class="fas fa-tag input-icon"></i>
+                    <input type="text" id="custom_id" name="custom_id" placeholder="e.g., my-link">
+                    <small>Leave blank for a random ID</small>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-cut"></i> Shorten URL
+                </button>
+            </form>
         </div>
         
-        <div class="form-group">
-            <label for="custom_id">Custom Short ID (optional):</label>
-            <input type="text" id="custom_id" name="custom_id" placeholder="e.g., my-link">
-            <small>Leave blank for a random ID</small>
-        </div>
+        {% if error %}
+            <div class="error">
+                <i class="fas fa-exclamation-triangle"></i> {{ error }}
+            </div>
+        {% endif %}
         
-        <button type="submit">Shorten URL</button>
-    </form>
+        {% if short_url %}
+            <div class="success">
+                <p><i class="fas fa-check-circle"></i> URL Shortened Successfully!</p>
+                <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
+                    <button class="copy-btn" onclick="copyToClipboard('{{ short_url }}')">
+                        <i class="fas fa-copy"></i> Copy
+                        <span class="copy-tooltip">Copied!</span>
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+        
+        <div class="snake-container" id="snakeContainer"></div>
+    </div>
     
-    {% if error %}
-        <p class="error">{{ error }}</p>
-    {% endif %}
-    
-    {% if short_url %}
-        <div class="success">
-            <p>Your shortened URL:</p>
-            <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
-        </div>
-    {% endif %}
+    <script>
+        // Function to copy URL to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                const tooltip = document.querySelector('.copy-tooltip');
+                tooltip.classList.add('show');
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 2000);
+            });
+        }
+        
+        // Snake animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const snakeContainer = document.getElementById('snakeContainer');
+            const snakes = [];
+            const numSnakes = 3;
+            
+            // Create the snakes
+            for (let i = 0; i < numSnakes; i++) {
+                createSnake(i);
+            }
+            
+            function createSnake(index) {
+                const snake = document.createElement('div');
+                snake.className = 'snake';
+                
+                const head = document.createElement('div');
+                head.className = 'snake-head';
+                
+                const eyeLeft = document.createElement('div');
+                eyeLeft.className = 'snake-eye left';
+                
+                const eyeRight = document.createElement('div');
+                eyeRight.className = 'snake-eye right';
+                
+                const body = document.createElement('div');
+                body.className = 'snake-body';
+                
+                head.appendChild(eyeLeft);
+                head.appendChild(eyeRight);
+                snake.appendChild(head);
+                snake.appendChild(body);
+                
+                snakeContainer.appendChild(snake);
+                
+                // Set initial position
+                const position = {
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight,
+                    speedX: (Math.random() - 0.5) * 2,
+                    speedY: (Math.random() - 0.5) * 2,
+                    scale: 0.5 + Math.random() * 1.5,
+                    rotate: Math.random() * 360
+                };
+                
+                snake.style.transform = `translate(${position.x}px, ${position.y}px) rotate(${position.rotate}deg) scale(${position.scale})`;
+                snake.style.opacity = 0.3 + Math.random() * 0.4;
+                
+                snakes.push({
+                    element: snake,
+                    position: position
+                });
+            }
+            
+            // Animate the snakes
+            function animateSnakes() {
+                snakes.forEach(snake => {
+                    const pos = snake.position;
+                    
+                    // Update position
+                    pos.x += pos.speedX;
+                    pos.y += pos.speedY;
+                    pos.rotate += pos.speedX * 2;
+                    
+                    // Bounce off edges
+                    if (pos.x < 0 || pos.x > window.innerWidth) {
+                        pos.speedX *= -1;
+                    }
+                    
+                    if (pos.y < 0 || pos.y > window.innerHeight) {
+                        pos.speedY *= -1;
+                    }
+                    
+                    // Apply the transform
+                    snake.element.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(${pos.rotate}deg) scale(${pos.scale})`;
+                });
+                
+                requestAnimationFrame(animateSnakes);
+            }
+            
+            animateSnakes();
+        });
+    </script>
 </body>
 </html>
